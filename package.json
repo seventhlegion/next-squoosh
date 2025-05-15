@@ -1,5 +1,5 @@
 {
-  "name": "passepartout",
+  "name": "next-passepartout",
   "version": "0.0.1",
   "description": "A React image optimization component with automatic WebP conversion and compression",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "prepublishOnly": "pnpm build",
-    "release": "release-it --no-git --no-github"
+    "release": "release-it"
   },
   "peerDependencies": {
     "react": "^19.1.0",
