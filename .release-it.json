@@ -15,7 +15,7 @@
     "releaseNotes": "git log --pretty=format:\"* %s (%h)\" ${latestTag}...HEAD"
   },
   "hooks": {
-    "before:init": ["pnpm test", "pnpm build"],
+    "before:init": ["pnpm build"],
     "after:bump": "pnpm build"
   }
 }

@@ -14,7 +14,7 @@ export interface PassepartoutProps
   blurDataURL?: string;
 }
 
-const Passepartout: React.FC<PassepartoutProps> = ({
+export const Passepartout: React.FC<PassepartoutProps> = ({
   src,
   alt,
   width,

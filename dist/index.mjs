@@ -1,31 +1,46 @@
 import { useState, useEffect } from 'react';
+import { exec } from 'child_process';
+import { writeFile, readFile, unlink } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import sharp from 'sharp';
+import { promisify } from 'util';
 import { jsx } from 'react/jsx-runtime';
 
-// src/components/image.tsx
-
-// src/utils/optimizer.ts
+// src/components/passepartout.tsx
+var execAsync = promisify(exec);
 async function optimizeImage(src, options = {}) {
+  const { quality = 80, format = "webp", width, height } = options;
+  const tempDir = tmpdir();
+  const inputPath = join(tempDir, `input-${Date.now()}.${format}`);
+  const outputPath = join(tempDir, `output-${Date.now()}.${format}`);
   try {
-    const { quality = 80, width, height, format = "webp" } = options;
-    const img = new Image();
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Could not get canvas context");
+    const response = await fetch(src);
+    const buffer = await response.arrayBuffer();
+    await writeFile(inputPath, Buffer.from(buffer));
+    let sharpInstance = sharp(inputPath);
+    if (width || height) {
+      sharpInstance = sharpInstance.resize(width, height, {
+        fit: "inside",
+        withoutEnlargement: true
+      });
     }
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-      img.src = src;
-    });
-    canvas.width = width || img.width;
-    canvas.height = height || img.height;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    const webpDataUrl = canvas.toDataURL(`image/${format}`, quality / 100);
-    return webpDataUrl;
-  } catch (error) {
-    console.error("Error optimizing image:", error);
-    return src;
+    const processedBuffer = await sharpInstance.webp({ quality }).toBuffer();
+    await writeFile(outputPath, processedBuffer);
+    await execAsync(
+      `npx @squoosh/cli --mozjpeg '{"quality":${quality}}' ${outputPath}`
+    );
+    const optimizedBuffer = await readFile(outputPath);
+    const base64 = optimizedBuffer.toString("base64");
+    const dataUrl = `data:image/${format};base64,${base64}`;
+    return dataUrl;
+  } finally {
+    try {
+      await unlink(inputPath);
+      await unlink(outputPath);
+    } catch (error) {
+      console.error("Error cleaning up temporary files:", error);
+    }
   }
 }
 var Passepartout = ({
@@ -100,8 +115,7 @@ var Passepartout = ({
     }
   );
 };
-var image_default = Passepartout;
 
-export { image_default as Image, optimizeImage };
+export { Passepartout, optimizeImage };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

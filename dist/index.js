@@ -1,33 +1,52 @@
 'use strict';
 
 var react = require('react');
+var child_process = require('child_process');
+var promises = require('fs/promises');
+var os = require('os');
+var path = require('path');
+var sharp = require('sharp');
+var util = require('util');
 var jsxRuntime = require('react/jsx-runtime');
 
-// src/components/image.tsx
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-// src/utils/optimizer.ts
+var sharp__default = /*#__PURE__*/_interopDefault(sharp);
+
+// src/components/passepartout.tsx
+var execAsync = util.promisify(child_process.exec);
 async function optimizeImage(src, options = {}) {
+  const { quality = 80, format = "webp", width, height } = options;
+  const tempDir = os.tmpdir();
+  const inputPath = path.join(tempDir, `input-${Date.now()}.${format}`);
+  const outputPath = path.join(tempDir, `output-${Date.now()}.${format}`);
   try {
-    const { quality = 80, width, height, format = "webp" } = options;
-    const img = new Image();
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Could not get canvas context");
+    const response = await fetch(src);
+    const buffer = await response.arrayBuffer();
+    await promises.writeFile(inputPath, Buffer.from(buffer));
+    let sharpInstance = sharp__default.default(inputPath);
+    if (width || height) {
+      sharpInstance = sharpInstance.resize(width, height, {
+        fit: "inside",
+        withoutEnlargement: true
+      });
     }
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-      img.src = src;
-    });
-    canvas.width = width || img.width;
-    canvas.height = height || img.height;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    const webpDataUrl = canvas.toDataURL(`image/${format}`, quality / 100);
-    return webpDataUrl;
-  } catch (error) {
-    console.error("Error optimizing image:", error);
-    return src;
+    const processedBuffer = await sharpInstance.webp({ quality }).toBuffer();
+    await promises.writeFile(outputPath, processedBuffer);
+    await execAsync(
+      `npx @squoosh/cli --mozjpeg '{"quality":${quality}}' ${outputPath}`
+    );
+    const optimizedBuffer = await promises.readFile(outputPath);
+    const base64 = optimizedBuffer.toString("base64");
+    const dataUrl = `data:image/${format};base64,${base64}`;
+    return dataUrl;
+  } finally {
+    try {
+      await promises.unlink(inputPath);
+      await promises.unlink(outputPath);
+    } catch (error) {
+      console.error("Error cleaning up temporary files:", error);
+    }
   }
 }
 var Passepartout = ({
@@ -102,9 +121,8 @@ var Passepartout = ({
     }
   );
 };
-var image_default = Passepartout;
 
-exports.Image = image_default;
+exports.Passepartout = Passepartout;
 exports.optimizeImage = optimizeImage;
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

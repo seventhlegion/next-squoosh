@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface PassepartoutProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     src: string;
     alt: string;
     width?: number;
@@ -11,14 +11,14 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     placeholder?: "blur" | "empty";
     blurDataURL?: string;
 }
-declare const Passepartout: React.FC<ImageProps>;
+declare const Passepartout: React.FC<PassepartoutProps>;
 
-interface ImageOptimizationOptions {
+interface OptimizeOptions {
     quality?: number;
+    format?: "webp" | "jpeg" | "png";
     width?: number;
     height?: number;
-    format?: "webp" | "jpeg" | "png";
 }
-declare function optimizeImage(src: string, options?: ImageOptimizationOptions): Promise<string>;
+declare function optimizeImage(src: string, options?: OptimizeOptions): Promise<string>;
 
-export { Passepartout as Image, type ImageOptimizationOptions, type ImageProps, optimizeImage };
+export { Passepartout, type PassepartoutProps, optimizeImage };
