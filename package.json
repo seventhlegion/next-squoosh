@@ -1,6 +1,6 @@
 {
-  "name": "passepartout",
-  "version": "0.1.0",
+  "name": "@seventhlegion/passepartout",
+  "version": "0.0.1",
   "description": "A React image optimization component with automatic WebP conversion and compression",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
