@@ -1,4 +1,4 @@
-import * as react from 'react';
+import * as react_jsx_runtime from 'react/jsx-runtime';
 import { CSSProperties } from 'react';
 
 type ImageFormat = "mozjpeg" | "webp" | "avif" | "png" | "jxl" | "wp2" | "original";
@@ -33,7 +33,7 @@ interface ImageProps {
 }
 
 declare const _default: {
-    Image: ({ src, alt, width, height, quality, format, loading, objectFit, objectPosition, fill, sizes, priority, placeholder, blurDataURL, onLoadingComplete, layout, ...rest }: ImageProps) => react.JSX.Element;
+    Image: ({ src, alt, width, height, quality, format, loading, objectFit, objectPosition, fill, sizes, priority, placeholder, blurDataURL, onLoadingComplete, layout, ...rest }: ImageProps) => react_jsx_runtime.JSX.Element;
 };
 
 /**

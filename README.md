@@ -14,9 +14,9 @@ A React package for image optimization that works similarly to Next.js's `next/i
 ## Installation
 
 ```bash
-npm install squoosh-image
+npm install next-squoosh
 # or
-yarn add squoosh-image
+yarn add next-squoosh
 ```
 
 Make sure you have the required peer dependencies:
@@ -32,7 +32,7 @@ yarn add react react-dom
 ### Basic Usage
 
 ```jsx
-import Image from 'squoosh-image';
+import Image from 'next-squoosh';
 
 function MyComponent() {
   return (
@@ -44,7 +44,7 @@ function MyComponent() {
 ### Fill Mode (Similar to next/image)
 
 ```jsx
-import Image from 'squoosh-image';
+import Image from 'next-squoosh';
 
 function MyComponent() {
   return (
@@ -58,7 +58,7 @@ function MyComponent() {
 ### With Blur Placeholder
 
 ```jsx
-import Image from 'squoosh-image';
+import Image from 'next-squoosh';
 
 function MyComponent() {
   return (
@@ -70,7 +70,7 @@ function MyComponent() {
 ### Priority Loading
 
 ```jsx
-import Image from 'squoosh-image';
+import Image from 'next-squoosh';
 
 function MyComponent() {
   return (
@@ -81,7 +81,7 @@ function MyComponent() {
 
 ## Configuration
 
-You can create a `squoosh-image.config.js` file in your project root to configure the default behavior:
+You can create a `next-squoosh.config.js` file in your project root to configure the default behavior:
 
 ```js
 module.exports = {
@@ -110,12 +110,12 @@ To enable build-time optimization, you need to add the webpack loader to your we
 
 ```js
 // webpack.config.js
-const { configureWebpack } = require('squoosh-image');
+const { configureWebpack } = require('next-squoosh');
 
 module.exports = configureWebpack({
   // Your existing webpack config
 }, {
-  // Optional: Override the default squoosh-image config here
+  // Optional: Override the default next-squoosh config here
   quality: 80,
   format: 'webp',
 });
@@ -133,7 +133,7 @@ module.exports = {
   ],
   plugins: [
     // Your existing plugins
-    'squoosh-image/babel/plugin'
+    'next-squoosh/babel/plugin'
   ]
 };
 ```
