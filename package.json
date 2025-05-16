@@ -9,14 +9,15 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "pnpm run build"
+    "prepare": "pnpm run build",
+    "release": "release-it"
   },
   "dependencies": {
     "@squoosh/cli": "^0.7.1",
     "fast-glob": "^3.3.1"
   },
   "devDependencies": {
-
+    "release-it": "^19.0.2",
     "typescript": "^5.8.3"
   },
   "keywords": [
