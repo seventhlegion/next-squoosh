@@ -1,6 +1,6 @@
 {
   "name": "next-squoosh",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A React image optimization component with automatic WebP conversion and compression",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
