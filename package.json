@@ -3,36 +3,20 @@
   "version": "0.0.2",
   "description": "A React image optimization component with automatic WebP conversion and compression",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "babel",
-    "webpack"
+    "dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "prepublishOnly": "pnpm build",
-    "release": "release-it"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "build": "tsc",
+    "prepare": "pnpm run build"
   },
   "dependencies": {
-    "@squoosh/cli": "^0.7.3",
-    "fs-extra": "^10.1.0",
-    "loader-utils": "^2.0.4"
+    "@squoosh/cli": "^0.7.1",
+    "fast-glob": "^3.3.1"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.13",
-    "@types/loader-utils": "^2.0.6",
-    "@types/node": "^22.15.18",
-    "@types/react": "^17.0.85",
-    "@types/react-dom": "^17.0.26",
-    "release-it": "^19.0.2",
-    "tsup": "^8.5.0",
+
     "typescript": "^5.8.3"
   },
   "keywords": [
