@@ -1,107 +1,171 @@
-# Passepartout
+# Squoosh Image
 
-A React image optimization component with automatic WebP conversion and compression. Passepartout automatically optimizes your images at build time, converting them to WebP format while maintaining quality and reducing file size.
+A React package for image optimization that works similarly to Next.js's `next/image`, but leverages [Squoosh](https://github.com/GoogleChromeLabs/squoosh) for image optimization at build time.
 
 ## Features
 
-- 🖼️ Automatic WebP conversion for all image types (JPG, PNG, GIF)
-- 🏗️ Build-time optimization with no runtime overhead
-- 📦 Zero client-side JavaScript for image optimization
-- 🔄 Automatic fallback to original images
-- 📐 Automatic dimension detection
-- 🎯 Configurable quality settings
-- ⚡ SSR-ready component
+- 🖼️ Image optimization at build time using Squoosh/cli
+- 🚀 Similar API to Next.js's `next/image` component
+- 📱 Responsive images with automatic sizing
+- 🔍 SEO-friendly with proper alt text and lazy loading
+- 🎛️ Configurable quality and format options
+- 🛠️ Compatible with popular build tools like webpack
 
 ## Installation
 
 ```bash
-npm install next-passepartout
+npm install squoosh-image
 # or
-yarn add next-passepartout
+yarn add squoosh-image
+```
+
+Make sure you have the required peer dependencies:
+
+```bash
+npm install react react-dom
 # or
-pnpm add next-passepartout
+yarn add react react-dom
 ```
 
 ## Usage
 
-1. Place your images in the `public` directory of your project.
+### Basic Usage
 
-2. Run the optimization script to convert images to WebP:
-
-```bash
-npm run optimize-images
-```
-
-3. Use the Passepartout component in your React components:
-
-```tsx
-import { Passepartout } from "next-passepartout";
+```jsx
+import Image from 'squoosh-image';
 
 function MyComponent() {
   return (
-    <Passepartout
-      src="/images/example.jpg" // Path relative to public folder
-      alt="Description of the image"
-      width={800} // Optional: override manifest dimensions
-      height={600} // Optional: override manifest dimensions
-      quality={80} // Optional: quality setting (default: 80)
-      priority={false} // Optional: eager loading (default: false)
-      loading="lazy" // Optional: loading strategy (default: "lazy")
-    />
+
   );
 }
 ```
 
-## Props
+### Fill Mode (Similar to next/image)
 
-| Prop          | Type              | Default   | Description                                     |
-| ------------- | ----------------- | --------- | ----------------------------------------------- |
-| `src`         | string            | required  | Path to the image relative to the public folder |
-| `alt`         | string            | required  | Alt text for the image                          |
-| `width`       | number            | auto      | Width of the image (optional)                   |
-| `height`      | number            | auto      | Height of the image (optional)                  |
-| `quality`     | number            | 80        | Quality of the WebP conversion (1-100)          |
-| `priority`    | boolean           | false     | Whether to load the image eagerly               |
-| `loading`     | "lazy" \| "eager" | "lazy"    | Loading strategy                                |
-| `placeholder` | "blur" \| "empty" | "empty"   | Placeholder type                                |
-| `blurDataURL` | string            | undefined | Blur placeholder data URL                       |
+```jsx
+import Image from 'squoosh-image';
 
-## Build Process
+function MyComponent() {
+  return (
 
-The build process automatically:
 
-1. Scans your `public` directory for images
-2. Converts all images to WebP format
-3. Generates a manifest with image metadata
-4. Preserves original images for fallback
-5. Optimizes images with configurable quality settings
 
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build the project
-npm run build
-
-# Run tests
-npm run test
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
+  );
+}
 ```
 
-## Contributing
+### With Blur Placeholder
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```jsx
+import Image from 'squoosh-image';
+
+function MyComponent() {
+  return (
+
+  );
+}
+```
+
+### Priority Loading
+
+```jsx
+import Image from 'squoosh-image';
+
+function MyComponent() {
+  return (
+
+  );
+}
+```
+
+## Configuration
+
+You can create a `squoosh-image.config.js` file in your project root to configure the default behavior:
+
+```js
+module.exports = {
+  // Default quality level (0-100)
+  quality: 75,
+  // Default output format
+  format: 'webp',
+  // Paths to scan for images
+  imageDirs: ['public', 'src'],
+  // Output directory for optimized images
+  outputPath: '.squoosh-cache',
+  // Whether to generate responsive sizes
+  responsive: true,
+  // Responsive breakpoints if enabled
+  breakpoints: [640, 750, 828, 1080, 1200, 1920],
+  // Cache images to avoid reprocessing
+  useCache: true,
+  // Cache directory
+  cacheDir: '.squoosh-cache',
+};
+```
+
+## Webpack Configuration
+
+To enable build-time optimization, you need to add the webpack loader to your webpack configuration:
+
+```js
+// webpack.config.js
+const { configureWebpack } = require('squoosh-image');
+
+module.exports = configureWebpack({
+  // Your existing webpack config
+}, {
+  // Optional: Override the default squoosh-image config here
+  quality: 80,
+  format: 'webp',
+});
+```
+
+## Babel Configuration
+
+To enable automatic transformation of Image components, add the Babel plugin to your Babel configuration:
+
+```js
+// babel.config.js
+module.exports = {
+  presets: [
+    // Your existing presets
+  ],
+  plugins: [
+    // Your existing plugins
+    'squoosh-image/babel/plugin'
+  ]
+};
+```
+
+## API Reference
+
+### Image Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | string | Required | Source path of the image |
+| `alt` | string | Required | Alternative text for accessibility |
+| `width` | number | undefined | Width of the image in pixels (required unless `fill` is true) |
+| `height` | number | undefined | Height of the image in pixels (required unless `fill` is true) |
+| `quality` | number | 75 | Quality of the optimized image (0-100) |
+| `format` | string | 'webp' | Output format: 'webp', 'avif', 'png', 'mozjpeg', etc. |
+| `loading` | string | 'lazy' | Image loading behavior: 'eager' or 'lazy' |
+| `objectFit` | string | undefined | CSS object-fit property |
+| `objectPosition` | string | undefined | CSS object-position property |
+| `fill` | boolean | false | Whether the image should fill its parent container |
+| `sizes` | string | undefined | Sizes attribute for responsive images |
+| `priority` | boolean | false | Whether to prioritize loading (sets loading="eager") |
+| `placeholder` | string | 'empty' | Placeholder type: 'blur' or 'empty' |
+| `blurDataURL` | string | undefined | Data URL for blur placeholder |
+| `onLoadingComplete` | function | undefined | Callback when image is loaded |
+
+## How It Works
+
+1. At build time, the webpack loader processes image imports and optimizes them using Squoosh.
+2. The Babel plugin transforms Image components to use the optimized images.
+3. The Image component renders with proper HTML attributes for performance and SEO.
 
 ## License
 
-MIT © [sevethlegion](https://github.com/seventhlegion)
+MIT
