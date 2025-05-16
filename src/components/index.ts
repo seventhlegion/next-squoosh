@@ -1,2 +1,3 @@
-export * from "./passepartout";
-export { default } from "./passepartout";
+export * from './Image';
+export { default } from "./Image";
+

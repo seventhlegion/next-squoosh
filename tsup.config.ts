@@ -2,11 +2,16 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["src/index.ts"],
-  format: ["cjs", "esm"],
+  format: ["esm", "cjs"],
   dts: true,
-  target: "es2022",
+  splitting: false,
+  sourcemap: true,
   clean: true,
-  loader: {
-    ".json": "json",
+  treeshake: true,
+  minify: true,
+  external: ["react", "react-dom"],
+  esbuildOptions(options) {
+    options.jsx = "automatic";
   },
+  tsconfig: "tsconfig.json",
 });

@@ -1,3 +1,4 @@
-export { Passepartout } from "./components/passepartout";
-export type { PassepartoutProps } from "./components/passepartout";
-export { optimizeImage } from "./utils/optimizer";
+export { default as Image } from "./components";
+export { imageOptimizationHandler, withSquooshImage } from "./next";
+export type { NextJsConfig } from "./next";
+export type { ImageProps } from "./types";
