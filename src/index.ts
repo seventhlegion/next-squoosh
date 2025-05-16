@@ -32,15 +32,19 @@ export function withSquooshOptimizer(nextConfig: any, options: OptimizerOptions 
 
         const imageFiles = glob.sync(`${absSrcDir}/**/*.{jpg,jpeg,png}`);
 
-        for (const file of imageFiles) {
-          const fileName = path.basename(file).split('.').slice(0, -1).join('-');
-
-          for (const format of formats) {
-            const outPath = path.join(absOutDir, `${fileName}-${format}-q${quality}.${format}`);
-            console.log(`🔧 Optimizing ${file} → ${outPath}`);
-            optimizeImage(file, absOutDir, format, quality);
-          }
-        }
+        // Process images in parallel
+        Promise.all(
+          imageFiles.flatMap(file =>
+            formats.map(format => {
+              const fileName = path.basename(file).split('.').slice(0, -1).join('-');
+              const outPath = path.join(absOutDir, `${fileName}-${format}-q${quality}.${format}`);
+              console.log(`🔧 Optimizing ${file} → ${outPath}`);
+              return optimizeImage(file, absOutDir, format, quality);
+            })
+          )
+        ).catch(error => {
+          console.error('Error optimizing images:', error);
+        });
       }
 
       if (typeof nextConfig.webpack === 'function') {
