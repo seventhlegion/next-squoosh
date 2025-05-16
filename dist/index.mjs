@@ -1,13 +1,61 @@
-import { useState, useEffect } from 'react';
-import { exec } from 'child_process';
-import { writeFile, readFile, unlink } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
-import sharp from 'sharp';
-import { promisify } from 'util';
-import { jsx } from 'react/jsx-runtime';
+// src/utils/get-image-manifest.ts
+var manifest = {};
+async function loadManifest() {
+  if (import.meta.env.MODE === "production") {
+    try {
+      manifest = await import("./image-manifest-II6YHNPC.mjs").then(
+        (m) => m.default
+      );
+    } catch (e) {
+      console.warn("Missing image-manifest.json");
+    }
+  }
+}
+loadManifest();
+var get_image_manifest_default = manifest;
 
 // src/components/passepartout.tsx
+import { jsx } from "react/jsx-runtime";
+var Passepartout = ({
+  src,
+  alt,
+  width,
+  height,
+  quality = 80,
+  priority = false,
+  loading = "lazy",
+  placeholder = "empty",
+  blurDataURL,
+  style,
+  className,
+  ...props
+}) => {
+  const manifestEntry = get_image_manifest_default?.[src];
+  const optimizedSrc = import.meta.env.MODE === "production" && manifestEntry?.webp ? manifestEntry.webp : src;
+  const finalWidth = width || manifestEntry?.width;
+  const finalHeight = height || manifestEntry?.height;
+  return /* @__PURE__ */ jsx(
+    "img",
+    {
+      src: optimizedSrc,
+      alt,
+      width: finalWidth,
+      height: finalHeight,
+      loading: priority ? "eager" : loading,
+      style,
+      className,
+      ...props
+    }
+  );
+};
+
+// src/utils/optimizer.ts
+import { exec } from "child_process";
+import { readFile, unlink, writeFile } from "fs/promises";
+import { tmpdir } from "os";
+import { join } from "path";
+import sharp from "sharp";
+import { promisify } from "util";
 var execAsync = promisify(exec);
 async function optimizeImage(src, options = {}) {
   const { quality = 80, format = "webp", width, height } = options;
@@ -43,79 +91,7 @@ async function optimizeImage(src, options = {}) {
     }
   }
 }
-var Passepartout = ({
-  src,
-  alt,
-  width,
-  height,
-  quality = 80,
-  priority = false,
-  loading = "lazy",
-  placeholder = "empty",
-  blurDataURL,
-  style,
-  className,
-  ...props
-}) => {
-  const [optimizedSrc, setOptimizedSrc] = useState(src);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    const optimize = async () => {
-      try {
-        setIsLoading(true);
-        const optimized = await optimizeImage(src, {
-          quality,
-          format: "webp",
-          width,
-          height
-        });
-        setOptimizedSrc(optimized);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to optimize image")
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    optimize();
-  }, [src, quality, width, height]);
-  const imageStyle = {
-    ...style,
-    opacity: isLoading ? 0.5 : 1,
-    transition: "opacity 0.3s ease-in-out"
-  };
-  if (error) {
-    console.error("Image optimization error:", error);
-    return /* @__PURE__ */ jsx(
-      "img",
-      {
-        src,
-        alt,
-        width,
-        height,
-        style,
-        className,
-        ...props
-      }
-    );
-  }
-  return /* @__PURE__ */ jsx(
-    "img",
-    {
-      src: optimizedSrc,
-      alt,
-      width,
-      height,
-      loading: priority ? "eager" : loading,
-      style: imageStyle,
-      className,
-      ...props
-    }
-  );
+export {
+  Passepartout,
+  optimizeImage
 };
-
-export { Passepartout, optimizeImage };
-//# sourceMappingURL=index.mjs.map
-//# sourceMappingURL=index.mjs.map

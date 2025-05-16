@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { optimizeImage } from "../utils/optimizer";
+import React from "react";
+import imageManifest from "../utils/get-image-manifest";
 
 export interface PassepartoutProps
   extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -28,62 +28,25 @@ export const Passepartout: React.FC<PassepartoutProps> = ({
   className,
   ...props
 }) => {
-  const [optimizedSrc, setOptimizedSrc] = useState<string>(src);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  // Get the optimized WebP version from the manifest
+  const manifestEntry = imageManifest?.[src];
+  const optimizedSrc =
+    import.meta.env.MODE === "production" && manifestEntry?.webp
+      ? manifestEntry.webp
+      : src;
 
-  useEffect(() => {
-    const optimize = async () => {
-      try {
-        setIsLoading(true);
-        const optimized = await optimizeImage(src, {
-          quality,
-          format: "webp",
-          width,
-          height,
-        });
-        setOptimizedSrc(optimized);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to optimize image")
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    optimize();
-  }, [src, quality, width, height]);
-
-  const imageStyle: React.CSSProperties = {
-    ...style,
-    opacity: isLoading ? 0.5 : 1,
-    transition: "opacity 0.3s ease-in-out",
-  };
-
-  if (error) {
-    console.error("Image optimization error:", error);
-    return (
-      <img
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        style={style}
-        className={className}
-        {...props}
-      />
-    );
-  }
+  // Use dimensions from manifest if not explicitly provided
+  const finalWidth = width || manifestEntry?.width;
+  const finalHeight = height || manifestEntry?.height;
 
   return (
     <img
       src={optimizedSrc}
       alt={alt}
-      width={width}
-      height={height}
+      width={finalWidth}
+      height={finalHeight}
       loading={priority ? "eager" : loading}
-      style={imageStyle}
+      style={style}
       className={className}
       {...props}
     />
