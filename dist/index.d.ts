@@ -1,7 +1,3 @@
-export interface OptimizerOptions {
-    sourceDir?: string;
-    outputDir?: string;
-    formats?: ('webp' | 'avif')[];
-    quality?: number;
-}
-export declare function withSquooshOptimizer(nextConfig: any, options?: OptimizerOptions): any;
+import { NextSquooshPlugin } from './next-squoosh-plugin';
+export default NextSquooshPlugin;
+export { NextSquooshPluginOptions } from './next-squoosh-plugin';
