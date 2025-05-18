@@ -13,20 +13,20 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@squoosh/lib": "^0.5.3",
-    "glob": "^11.0.2"
+    "@squoosh/lib": "^0.5.3"
   },
   "devDependencies": {
-    "@types/glob": "^7.2.0",
-    "@types/node": "^16.11.12",
-    "@types/webpack": "^5.28.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "release-it": "^19.0.2",
-    "rimraf": "^3.0.2",
     "typescript": "^4.5.4"
   },
   "peerDependencies": {
-    "next": ">=10.0.0",
-    "webpack": ">=4.0.0"
+    "next": ">=15.3.0",
+    "react": ">=19.1.0",
+    "react-dom": ">=19.1.0"
   },
   "keywords": [
     "react",

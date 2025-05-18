@@ -1,10 +1,10 @@
 # Next.js Squoosh Image Optimizer
 
-A Next.js plugin that optimizes images at build time using [Squoosh](https://github.com/GoogleChromeLabs/squoosh) CLI.
+A Next.js plugin that optimizes images at build time using [Squoosh](https://github.com/GoogleChromeLabs/squoosh) library.
 
 ## Features
 
-- 🖼️ Image optimization at build time using Squoosh CLI
+- 🖼️ Image optimization at build time using Squoosh
 - 🚀 Automatic optimization of images in specified directories
 - 📱 Support for multiple output formats (WebP, AVIF)
 - 🎛️ Configurable quality and format options
@@ -16,6 +16,8 @@ A Next.js plugin that optimizes images at build time using [Squoosh](https://git
 npm install next-squoosh
 # or
 yarn add next-squoosh
+# or
+pnpm add next-squoosh
 ```
 
 ## Usage
@@ -49,7 +51,7 @@ module.exports = withSquooshOptimizer({
 ## How It Works
 
 1. During the Next.js build process, the plugin scans the specified source directory for images
-2. Each image is processed using Squoosh CLI to create optimized versions in the specified formats
+2. Each image is processed using Squoosh to create optimized versions in the specified formats
 3. Optimized images are saved to the output directory with format and quality information in the filename
 4. The original Next.js image optimization is disabled to prevent double optimization
 
